@@ -1,7 +1,6 @@
 '''
 This script generates simulated toon shading using Solidify modifier on an object
 Only tested on EEVEE so far, you're welcome to try on other renderer if available (Cycles, etc.)
-
 How to use :
     1. Launch Blender
     
@@ -55,16 +54,18 @@ if material_transparent is None:
     material_transparent_links.new(material_transparent_shader.outputs[0], material_transparent_output.inputs[0])
 
 # Counting the amount of materials inside the object
-material_slot_number = 0
-object.active_material_index = material_slot_number
-while object.active_material != None:
-    material_slot_number += 1
-    object.active_material_index = material_slot_number
+
+material_slots = []
+material_slot_index = 0
+for material in object.data.materials: 
+    material_slots.append([material_slot_index, material.blend_method])
+    material_slot_index += 1
 
 # Placing outline materials below each existing materials in the object
-for i in range((material_slot_number)):
+for material in material_slots:
     bpy.ops.object.material_slot_add()
-    object.active_material = material_outline
+    if (material[1] == 'BLEND'): object.active_material = material_transparent
+    else: object.active_material = material_outline
     if index > 0:
         for i in range(index): bpy.ops.object.material_slot_move(direction='UP')
     index += 2
@@ -72,6 +73,7 @@ for i in range((material_slot_number)):
 # Adds Solidify modifier into the object with certain properties
 # Feel free to adjust the Solidify modifier's properties later
 if object.modifiers.get('Solidify') is None: bpy.ops.object.modifier_add(type = 'SOLIDIFY')
+object.modifiers['Solidify'].thickness = 0.001
 object.modifiers['Solidify'].offset = 1
 object.modifiers['Solidify'].use_rim = False
 object.modifiers['Solidify'].use_flip_normals = True
