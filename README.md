@@ -9,7 +9,7 @@ A script to generate a real-time simulated toon shading for an object in Blender
     
    3. Click **'Open'** on the top-middle of the window.
     
-   4. Navigate to this **'blender-eevee_toon_solidify.py'** file location and open it.
+   4. Navigate to this **'script-eevee_toon_solidify.py'** file location and open it.
     
    5. On the **3D Viewport** window, select an object with at least one material.
     
