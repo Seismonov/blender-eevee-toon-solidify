@@ -21,24 +21,17 @@ import bpy
 
 index = 0
 object = bpy.context.view_layer.objects.active
-solidify = 'Solidify'
-solidify_1 = 0
-solidify_2 = 0
-solidify_3 = 0
+solidify_existing = object.modifiers.get('Solidify')
+solidify = 'Toon Solidify'
 
-# Adds Solidify modifier into the object with certain properties
-# Feel free to adjust the Solidify modifier's properties later
-while object.modifiers.get(solidify) is not None:
-    solidify_1 += 1
-    if (solidify_1 == 10):
-        solidify_1 = 0
-        solidify_2 += 1
-    if (solidify_2 == 10):
-        solidify_2 = 0
-        solidify_3 += 1
-    solidify = 'Solidify.{}{}{}'.format(solidify_3, solidify_2, solidify_1)
-
+# Adds Solidify modifier into the object
+# If there's an existing Solidify modifier without custom name, temporarily renames it so we can add our own solidify modifier
+if solidify_existing is not None: solidify_existing.name = 'Solidify_temp'
 bpy.ops.object.modifier_add(type = 'SOLIDIFY')
+object.modifiers['Solidify'].name = solidify
+if solidify_existing is not None: solidify_existing.name = 'Solidify'
+
+# Adds certain properties to the 'Toon Solidify' solidify modifier
 object.modifiers[solidify].thickness = 0.001
 object.modifiers[solidify].offset = 1
 object.modifiers[solidify].use_rim = False
